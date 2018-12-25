@@ -4,9 +4,11 @@ namespace B3none\NDSScraper\Helpers;
 
 class StorageHelper
 {
+    const DIRECTORY = __DIR__.'/../storage/';
+
     const FILES = [
-        __DIR__.'/../storage/scrape_state.json',
-        __DIR__.'/../storage/urls.json',
+        'scrape_state.json',
+        'urls.json',
     ];
 
     /**
@@ -17,28 +19,49 @@ class StorageHelper
     public function __construct()
     {
         foreach (self::FILES as $file) {
+            $file = self::DIRECTORY . $file;
+
             if (!file_exists($file)) {
                 $handle = fopen($file, 'w');
 
-                fwrite($file, json_encode([]));
+                fwrite($handle, json_encode([]));
 
                 fclose($handle);
             }
         }
     }
 
-    public function getAllLinks()
+    /**
+     * Return all stored links regardless of state.
+     *
+     * @return array
+     */
+    public function getAllLinks(): array
     {
-
+        return json_decode(self::DIRECTORY . 'urls.json', true);
     }
 
-    public function getCompletedLinks()
+    /**
+     * Return all completed links
+     *
+     * @return array
+     */
+    public function getCompletedLinks(): array
     {
-
+        return array_filter($this->getAllLinks(), function ($link) {
+            return $link['is_completed'] == true;
+        });
     }
 
-    public function getUnfinishedLinks()
+    /**
+     * Return all unfinished links
+     *
+     * @return array
+     */
+    public function getUnfinishedLinks(): array
     {
-
+        return array_filter($this->getAllLinks(), function ($link) {
+            return $link['is_completed'] == false;
+        });
     }
 }
