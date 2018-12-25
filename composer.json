@@ -12,5 +12,8 @@
     "psr-4": {
       "B3none\\NDSScraper\\": "src/"
     }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "^6.3"
   }
 }
